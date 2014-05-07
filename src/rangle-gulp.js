@@ -12,8 +12,6 @@ var fs = require('fs');
 
 var defaults = {};
 
-defaults.jsBeautifyOptions = JSON.parse(fs.readFileSync('.jsbeautifyrc'));
-
 defaults.clientScripts = [
   'client/app/**/*.js',
   'client/app/*.js'
@@ -73,15 +71,21 @@ exports.jshint = function (options) {
 
 // Makes a task that runs JSBeautify on all script and test files.
 exports.beautify = function (options) {
+  var jsBeautifyConfigFile = options.configFile || '.jsbeautifyrc';
+  var jsBeautifyConfig = JSON.parse(fs.readFileSync(jsBeautifyConfigFile));
+  var files = options.files || defaults.allScripts;
   return function () {
-    gulp.src(options.files || defaults.allScripts)
-      .pipe(beautify(options.beautify))
-      .pipe(gulp.dest('./client/app/'));
+    files.forEach(function (path) {
+      var dir = path.split('/')[0];
+      gulp.src([path])
+        .pipe(beautify(jsBeautifyConfig))
+        .pipe(gulp.dest(dir));
+    });
   };
 };
 
 // Makes a task that runs the server in dev mode.
-exports.nodemon = function(options) {
+exports.nodemon = function (options) {
   var nodemonOptions = {
     script: 'server/app.js',
     ext: 'html js css',

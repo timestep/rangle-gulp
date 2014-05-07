@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var rg = require('./src/rangle-gulp');
 
+var allScripts = ['src/*.js', 'test-data/**/*.js'];
+
 gulp.task('karma', rg.karma({
   // files: specify which folders
   // karmaConf: specify which karma config file
@@ -12,11 +14,11 @@ gulp.task('karma-watch', rg.karmaWatch({
 }));
 
 gulp.task('lint', rg.jshint({
-  files: ['src/*.js']
+  files: allScripts
 }));
 
 gulp.task('beautify', rg.beautify({
-  // files: specify which files
+  files: allScripts
 }));
 
 gulp.task('dev', rg.nodemon({
