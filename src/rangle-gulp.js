@@ -36,6 +36,7 @@ defaults.clientTestScripts = [
 
 // Makes a task that runs or watches client-side tests using Karma.
 function makeKarmaTask(action, options) {
+  options = options || {};
   return function () {
     // Be sure to return the stream
     return gulp.src(options.files || defaults.clientTestScripts)
@@ -52,16 +53,19 @@ function makeKarmaTask(action, options) {
 
 // Makes a task that runs Karma.
 exports.karma = function (options) {
+  options = options || {};
   return makeKarmaTask('run', options);
 };
 
 // Makes a task that runs Karma in watch mode.
 exports.karmaWatch = function (options) {
+  options = options || {};
   return makeKarmaTask('watch', options);
 };
 
 // Makes a task that runs JSHint on all script files.
 exports.jshint = function (options) {
+  options = options || {};
   return function () {
     gulp.src(options.files || defaults.allScripts)
       .pipe(jshint())
@@ -71,6 +75,7 @@ exports.jshint = function (options) {
 
 // Makes a task that runs JSBeautify on all script and test files.
 exports.beautify = function (options) {
+  options = options || {};
   var jsBeautifyConfigFile = options.configFile || '.jsbeautifyrc';
   var jsBeautifyConfig = JSON.parse(fs.readFileSync(jsBeautifyConfigFile));
   var files = options.files || defaults.allScripts;
@@ -86,6 +91,7 @@ exports.beautify = function (options) {
 
 // Makes a task that runs the server in dev mode.
 exports.nodemon = function (options) {
+  options = options || {};
   var nodemonOptions = {
     script: 'server/app.js',
     ext: 'html js css',
