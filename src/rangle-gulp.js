@@ -22,9 +22,11 @@ var defaults = {};
 
 // Set up logger.
 function makeLogger(level) {
-  return new (winston.Logger)({
+  return new(winston.Logger)({
     transports: [
-      new (winston.transports.Console)({ level: level }),
+      new(winston.transports.Console)({
+        level: level
+      }),
     ]
   });
 }
@@ -57,7 +59,7 @@ function makeKarmaTask(action, options) {
   files = files.concat(options.files || defaults.clientTestScripts);
 
   logger.debug('Setting up a karma task to run on the following files:');
-  files.forEach(function(file) {
+  files.forEach(function (file) {
     logger.debug('  ', file);
   });
 
@@ -91,10 +93,12 @@ exports.karmaWatch = function (options) {
 exports.mocha = function (options) {
   options = options || {};
   var files = options.files || defaults.serverTestScripts;
-  return function() {
+  return function () {
     gulp.src(files)
-      .pipe(mocha({reporter: 'nyan'}))
-      .on('end', function() {
+      .pipe(mocha({
+        reporter: 'nyan'
+      }))
+      .on('end', function () {
         console.log('Donnnn');
       });
   };
@@ -131,13 +135,13 @@ exports.concatAndUglify = function (options) {
   options = options || {};
   var name = options.name || 'all';
   var distFolder = options.dest || 'client/dist';
-  var filter = gulpFilter(function(file) {
+  var filter = gulpFilter(function (file) {
     return !/\.test\.js$/.test(file.path);
   });
   return function () {
     gulp.src(options.files || defaults.clientScripts)
       .pipe(filter)
-      .pipe(concat(name + '.js'))     
+      .pipe(concat(name + '.js'))
       .pipe(gulp.dest(distFolder))
       .pipe(rename(name + '.min.js'))
       .pipe(uglify())
@@ -173,6 +177,6 @@ exports.nodemon = function (options) {
 };
 
 // Sets log level for the task setup process.
-exports.setLogLevel = function(level) {
+exports.setLogLevel = function (level) {
   logger = makeLogger(level);
 };
