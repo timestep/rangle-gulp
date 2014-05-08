@@ -8,6 +8,10 @@ var jshint = require('gulp-jshint');
 var beautify = require('gulp-js-beautify');
 var karma = require('gulp-karma');
 var mocha = require('gulp-mocha');
+var concat = require('gulp-concat');
+var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
+var gulpFilter = require('gulp-filter');
 var nodemon = require('gulp-nodemon');
 var winston = require('winston');
 var fs = require('fs');
@@ -23,7 +27,7 @@ function makeLogger(level) {
       new (winston.transports.Console)({ level: level }),
     ]
   });
-};
+}
 var logger = makeLogger('info');
 
 defaults.clientScripts = [
@@ -93,7 +97,7 @@ exports.mocha = function (options) {
       .on('end', function() {
         console.log('Donnnn');
       });
-  }
+  };
 };
 
 // Makes a task that runs JSHint on all script files.
@@ -119,6 +123,25 @@ exports.beautify = function (options) {
         .pipe(beautify(jsBeautifyConfig))
         .pipe(gulp.dest(dir));
     });
+  };
+};
+
+// Makes a task that runs JSBeautify on all script and test files.
+exports.concatAndUglify = function (options) {
+  options = options || {};
+  var name = options.name || 'all';
+  var distFolder = options.dest || 'client/dist';
+  var filter = gulpFilter(function(file) {
+    return !/\.test\.js$/.test(file.path);
+  });
+  return function () {
+    gulp.src(options.files || defaults.clientScripts)
+      .pipe(filter)
+      .pipe(concat(name + '.js'))     
+      .pipe(gulp.dest(distFolder))
+      .pipe(rename(name + '.min.js'))
+      .pipe(uglify())
+      .pipe(gulp.dest(distFolder));
   };
 };
 
