@@ -17,11 +17,14 @@ var fs = require('fs');
 var defaults = {};
 
 // Set up logger.
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({ level: 'error' }),
-  ]
-});
+function makeLogger(level) {
+  return new (winston.Logger)({
+    transports: [
+      new (winston.transports.Console)({ level: level }),
+    ]
+  });
+};
+var logger = makeLogger('info');
 
 defaults.clientScripts = [
   'client/app/**/*.js'
@@ -148,5 +151,5 @@ exports.nodemon = function (options) {
 
 // Sets log level for the task setup process.
 exports.setLogLevel = function(level) {
-  logger.setLevels(winston.config.syslog.levels);
+  logger = makeLogger(level);
 };
