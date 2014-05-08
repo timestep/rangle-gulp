@@ -1,3 +1,5 @@
+/* global require, console */
+
 'use strict';
 
 /* global require */
@@ -5,16 +7,24 @@ var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var beautify = require('gulp-js-beautify');
 var karma = require('gulp-karma');
+var mocha = require('gulp-mocha');
 var nodemon = require('gulp-nodemon');
+var winston = require('winston');
 var fs = require('fs');
 // var lr = require('tiny-lr');
 // var server = lr();
 
 var defaults = {};
 
+// Set up logger.
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({ level: 'error' }),
+  ]
+});
+
 defaults.clientScripts = [
-  'client/app/**/*.js',
-  'client/app/*.js'
+  'client/app/**/*.js'
 ];
 
 defaults.serverScripts = [
@@ -25,23 +35,30 @@ defaults.serverScripts = [
 defaults.allScripts = defaults.clientScripts.concat(defaults.serverScripts);
 
 defaults.clientTestScripts = [
-  // 3rd party code
-  'client/components-bower/angular/angular.js',
-  'client/components-bower/angular-mocks/angular-mocks.js',
-  'client/components-bower/koast/client/src/**/*.js',
-
   // app and test code
   'client/app/**/*.js'
+];
+
+defaults.serverTestScripts = [
+  'server/lib/**/*.test.js'
 ];
 
 // Makes a task that runs or watches client-side tests using Karma.
 function makeKarmaTask(action, options) {
   options = options || {};
+  var files = options.vendor || [];
+  files = files.concat(options.files || defaults.clientTestScripts);
+
+  logger.debug('Setting up a karma task to run on the following files:');
+  files.forEach(function(file) {
+    logger.debug('  ', file);
+  });
+
   return function () {
     // Be sure to return the stream
-    return gulp.src(options.files || defaults.clientTestScripts)
+    return gulp.src(files)
       .pipe(karma({
-        configFile: options.karmaConf || 'client/tests/karma.conf.js',
+        configFile: options.karmaConf || 'client/testing/karma.conf.js',
         action: action
       }))
       .on('error', function (err) {
@@ -61,6 +78,19 @@ exports.karma = function (options) {
 exports.karmaWatch = function (options) {
   options = options || {};
   return makeKarmaTask('watch', options);
+};
+
+// Makes a task that runs Mocha. (Use this for server-side tests.)
+exports.mocha = function (options) {
+  options = options || {};
+  var files = options.files || defaults.serverTestScripts;
+  return function() {
+    gulp.src(files)
+      .pipe(mocha({reporter: 'nyan'}))
+      .on('end', function() {
+        console.log('Donnnn');
+      });
+  }
 };
 
 // Makes a task that runs JSHint on all script files.
@@ -92,6 +122,11 @@ exports.beautify = function (options) {
 // Makes a task that runs the server in dev mode.
 exports.nodemon = function (options) {
   options = options || {};
+
+  // if (options.workingDirectory) {
+  //   process.chdir(options.workingDirectory);
+  // }
+
   var nodemonOptions = {
     script: 'server/app.js',
     ext: 'html js css',
@@ -106,7 +141,12 @@ exports.nodemon = function (options) {
     nodemon(nodemonOptions)
       .on('change', options.onChange || ['lint'])
       .on('restart', function () {
-        console.log('--- Restarted the server ---');
+        logger.info('--- Restarted the server ---');
       });
   };
+};
+
+// Sets log level for the task setup process.
+exports.setLogLevel = function(level) {
+  logger.setLevels(winston.config.syslog.levels);
 };
