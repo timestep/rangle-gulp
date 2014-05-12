@@ -1,6 +1,6 @@
 .content {
 	width: 600px;
-	margin: 30px auto 0 auto;
+	margin: 20px auto 0 auto;
 	font-family: sans-serif;
 	text-align: left;
 	h1 { color: #34495e; border-bottom: 1px solid #7f8c8d; padding: 10px 5px; }
@@ -15,8 +15,12 @@
 		padding: 2px 6px;
 	}
 	img {
-		padding-top: 24px;
+		margin: 24px auto 24px auto;
 		width: 480px !important;
+		border-radius: 4px;
+		display: block;
+		border: 1px solid #bdc3c7;
+		padding: 4px;
 	}
 	.center { text-align: center; }
 }
