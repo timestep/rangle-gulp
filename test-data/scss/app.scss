@@ -1,0 +1,21 @@
+.content {
+	width: 600px;
+	margin: 120px auto 0 auto;
+	font-family: sans-serif;
+	text-align: left;
+	h1 { color: #34495e; }
+	a { text-decoration: none; color: #3498db; }
+	p { line-height: 1.5; }
+	em { 
+		color: #95a5a6; 
+		font-style: normal;
+		background: #ecf0f1;
+		border-radius: 2px;
+		padding: 2px 6px;
+	}
+	img {
+		padding-top: 24px;
+		width: 480px !important;
+	}
+	.center { text-align: center; }
+}

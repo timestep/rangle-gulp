@@ -186,41 +186,27 @@ exports.setLogLevel = function (level) {
   logger = makeLogger(level);
 };
 
-// Compile sass: requires a source and destination
+// Watch and compile sass: requires a source and destination
 exports.sass = function(options) {
   options = options || {};
-  var source = options.src || './www/scss/app.scss';
-  var destination = options.src || './www/css';
+  var source = options.source || 
+    ['./test-data/scss/**/*.scss', './test-data/scss/*.scss'];
+  var destination = options.destination || './www/css';
 
-  console.log('[SASS] recompiling'.yellow);
+  console.log('[SASS] Watching for changes in www/sass'.yellow.inverse);
   
   gulp.src(source)
+    .pipe(watch())
     .pipe(sass({
       errLogToConsole: true
     }))
     .pipe(minifyCSS())
     .pipe(gulp.dest(destination))
     .pipe(connect.reload());
-  
-  console.log('[CSS] minifying'.yellow);
+
+  // console.log('[SASS] recompiling'.yellow);
+  // console.log('[CSS] minifying'.yellow);
 };
-
-// Watch sass for changes and recompile
-exports.sassWatch = function(options) {
-  var sassFiles = options.sassFiles || 
-    ['./www/scss/**/*.scss', './scss/*.scss'];
-  var sassTask = options.sassTask || function() {
-    console.log('[SASS] A sass task was not provided'.red);
-    console.log('[SASS] Please define a sass compile task in your options'.red);
-  };
-
-  gulp.watch(sassFiles, function() {
-    sassTask();
-  });
-
-  console.log('[SASS] Watching for changes in www/sass'.yellow.inverse);
-};
-
 
 // Start a connect server and setup live reload
 exports.connectWatch = function (options) {
