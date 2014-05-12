@@ -203,9 +203,6 @@ exports.sass = function(options) {
     .pipe(minifyCSS())
     .pipe(gulp.dest(destination))
     .pipe(connect.reload());
-
-  // console.log('[SASS] recompiling'.yellow);
-  // console.log('[CSS] minifying'.yellow);
 };
 
 // Start a connect server and setup live reload

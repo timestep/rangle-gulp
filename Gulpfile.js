@@ -25,11 +25,6 @@ gulp.task('dev', rg.nodemon({
   onChange: ['lint'] // or ['lint', 'karma']
 }));
 
-// gulp.task('sass', rg.sass({
-// 	source : './test-data/scss/app.scss',
-// 	destination : './test-data/css'
-// }));
-
 // Example dev task if you are building a Cordova app
 gulp.task('dev-cordova', function(options) {
 	// Watch sass files
@@ -40,7 +35,7 @@ gulp.task('dev-cordova', function(options) {
 	});
 
 	// Start a connect server
-	// Watch for changes to html, js, sass files
+	// Watch for changes to html & js files
 	// Re-load browser (make sure you install live-reload 
 	// extension for your browser)
 	rg.connectWatch({

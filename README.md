@@ -62,6 +62,14 @@ config file other than ".jsbeautifyrc".
 Sets up a nodemon task. Use "options.onChange" to provide an array of task
 names for tasks that should run on file change. (The default is just lint.)
 
+## sass(options)
+
+Sets up a sass task that watches for changes, compiles sass to css and then minifies the css. The task requires source (array of source locations) and destination location to be passed in as options. 
+
+## connectWatch(options)
+
+Starts a connect server which watches for changes to html & js files. It re-loads browser (make sure you install live-reload extension for your browser). The options can set `root` (folder path) `port`, `livereload` (boolean) and `glob` (arrary of source locations).
+
 # Logging
 
 You can turn on control logging using setLogLevel(). E.g.:
