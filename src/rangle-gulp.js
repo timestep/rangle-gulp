@@ -192,9 +192,8 @@ exports.sass = function(options) {
   var source = options.source || 
     ['./test-data/scss/**/*.scss', './test-data/scss/*.scss'];
   var destination = options.destination || './www/css';
-
-  console.log('[SASS] Watching for changes in www/sass'.yellow.inverse);
   
+  console.log('[SASS] recompiling'.yellow);
   gulp.src(source)
     .pipe(watch())
     .pipe(sass({
@@ -203,6 +202,7 @@ exports.sass = function(options) {
     .pipe(minifyCSS())
     .pipe(gulp.dest(destination))
     .pipe(connect.reload());
+  console.log('[CSS] minifying'.yellow);
 };
 
 // Start a connect server and setup live reload
