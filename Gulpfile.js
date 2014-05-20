@@ -25,4 +25,26 @@ gulp.task('dev', rg.nodemon({
   onChange: ['lint'] // or ['lint', 'karma']
 }));
 
+// Example dev task if you are building a Cordova app
+gulp.task('dev-cordova', function(options) {
+	// Watch sass files
+	// re-compile sass and minify css
+	rg.sass({
+		source : './test-data/scss/app.scss',
+		destination : './test-data/css'
+	});
+
+	// Start a connect server
+	// Watch for changes to html & js files
+	// Re-load browser (make sure you install live-reload 
+	// extension for your browser)
+	rg.connectWatch({
+		root : 'test-data',
+		port : 3000,
+		livereload : true,
+  	// Files to watch for live re-load
+		glob : ['./test-data/*.html', './test-data/*.js']
+	});
+});
+
 gulp.task('default', ['lint']);

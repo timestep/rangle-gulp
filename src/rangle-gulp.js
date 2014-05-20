@@ -15,6 +15,11 @@ var gulpFilter = require('gulp-filter');
 var nodemon = require('gulp-nodemon');
 var winston = require('winston');
 var fs = require('fs');
+var sass = require('gulp-sass');
+var connect = require('gulp-connect');
+var colors = require('colors');
+var minifyCSS = require('gulp-minify-css');
+var watch = require('gulp-watch');
 // var lr = require('tiny-lr');
 // var server = lr();
 
@@ -179,4 +184,48 @@ exports.nodemon = function (options) {
 // Sets log level for the task setup process.
 exports.setLogLevel = function (level) {
   logger = makeLogger(level);
+};
+
+// Watch and compile sass: requires a source and destination
+exports.sass = function(options) {
+  options = options || {};
+  var source = options.source || 
+    ['./test-data/scss/**/*.scss', './test-data/scss/*.scss'];
+  var destination = options.destination || './www/css';
+  
+  console.log('[SASS] recompiling'.yellow);
+  gulp.src(source)
+    .pipe(watch())
+    .pipe(sass({
+      errLogToConsole: true
+    }))
+    .pipe(minifyCSS())
+    .pipe(gulp.dest(destination))
+    .pipe(connect.reload());
+  console.log('[CSS] minifying'.yellow);
+};
+
+// Start a connect server and setup live reload
+exports.connectWatch = function (options) {
+  options = options || {};
+  var root = options.root || 'www';
+  var port = options.port || 3000;
+  var livereload = options.livereload || true;
+  // Files to watch for live re-load
+  var glob = options.glob || ['./www/**/*.html', './www/**/*.js'];
+
+  connect.server({
+    root: root,
+    port: port,
+    livereload: livereload
+  });
+
+  console.log('[CONNECT] Listening on port 3000'.yellow.inverse);
+
+  // Watch HTML and JS
+  console.log('[CONNECT] Watching HTML and JS files for live-reload'.blue);
+  watch({
+    glob: glob
+  })
+    .pipe(connect.reload());
 };

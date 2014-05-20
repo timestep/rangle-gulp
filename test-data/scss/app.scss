@@ -1,0 +1,26 @@
+.content {
+	width: 600px;
+	margin: 20px auto 0 auto;
+	font-family: sans-serif;
+	text-align: left;
+	h1 { color: #34495e; border-bottom: 1px solid #7f8c8d; padding: 10px 5px; }
+	a { text-decoration: none; color: #3498db; }
+	p { line-height: 1.5; }
+	p.lead { font-size: 24px; font-weight: lighter; }
+	em { 
+		color: #7f8c8d; 
+		font-style: normal;
+		background: #ecf0f1;
+		border-radius: 2px;
+		padding: 2px 6px;
+	}
+	img {
+		margin: 24px auto 24px auto;
+		width: 480px !important;
+		border-radius: 4px;
+		display: block;
+		border: 1px solid #bdc3c7;
+		padding: 4px;
+	}
+	.center { text-align: center; }
+}
