@@ -22,6 +22,9 @@ var minifyCSS = require('gulp-minify-css');
 var watch = require('gulp-watch');
 // var lr = require('tiny-lr');
 // var server = lr();
+//
+var imagemagick = require('imagemagick');
+var _ = require('lodash');
 
 var defaults = {};
 
@@ -228,4 +231,124 @@ exports.connectWatch = function (options) {
     glob: glob
   })
     .pipe(connect.reload());
+};
+
+// Generate resized and renamed icons and places them in
+// appropriate platform directory.
+// 
+// params can contain an 'iconSrc' property, which will default
+// to 'icon.png' when omitted.
+//
+// params also can contain a 'platforms' property, containing
+// the names of the platforms you want to generate icons for.
+// Defaults to ['android', 'ios'] when omitted.
+//
+exports.cordovaIcons = function(params) {
+  var iconSrc   = params.iconSrc || 'icon.png';
+  var platforms = params.platforms || ['android', 'ios'];
+  var project   = params.project;
+
+  if(!project) {
+    throw 'No project specified';
+  }
+
+  var androidSizes = [
+    {
+      name: 'icon-36-ldpi.png',
+      size: 36
+    },
+    {
+      name: 'icon-48-ldpi.png',
+      size: 48
+    },
+    {
+      name: 'icon-72-ldpi.png',
+     size: 72
+    },
+    {
+      name: 'icon-96-ldpi.png',
+      size: 96
+    }
+  ];
+
+  var iosSizes = [
+    {
+      name: 'icon-29.png',
+      size: 29
+    },
+    {
+      name: 'icon-40.png',
+      size: 40
+    },
+    {
+      name: 'icon-40@2x.png',
+      size: 80
+    },
+    {
+      name: 'icon-50.png',
+      size: 50
+    },
+    {
+      name: 'icon-50@2x.png',
+      size: 100
+    },
+    {
+      name: 'icon-57.png',
+      size: 57
+    },
+    {
+      name: 'icon-57@2x.png',
+      size: 114
+    },
+    {
+      name: 'icon-60.png',
+      size: 60
+    },
+    {
+      name: 'icon-60@2x.png',
+      size: 120
+    },
+    {
+      name: 'icon-72x.png',
+      size: 72
+    },
+    {
+      name: 'icon-72@2x.png',
+      size: 144
+    },
+    {
+      name: 'icon-76x.png',
+      size: 76
+    },
+    {
+      name: 'icon-76@2x.png',
+      size: 156
+    },
+    {
+      name: 'icon-small.png',
+      size: 30
+    },
+    {
+      name: 'icon-small@2x.png',
+      size: 60
+    },
+    {
+      name: 'icon.png',
+      size: 58
+    },
+    {
+      name: 'icon@2x.png',
+      size: 116
+    },
+    {
+      name: 'store-1024.png',
+      size: 1024
+    },
+  ];
+
+  return function() {
+    _.each(iosSizes, function(size) {
+      console.log(size);
+    });
+  };
 };
