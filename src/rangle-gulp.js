@@ -250,27 +250,28 @@ exports.cordovaIcons = function(params) {
   var platforms = params.platforms || ['android', 'ios'];
   var project   = params.project;
 
-  if(!project) {
-    throw 'No project specified';
-  }
 
-  var iosPath = 'platforms/ios/' + project + '/Resources/icons/';
+  var androidPath = 'platforms/android/res/';
 
   var androidSizes = [
     {
-      name: 'icon-36-ldpi.png',
+      name: 'drawable-ldpi/icon.png',
       size: 36
     },
     {
-      name: 'icon-48-ldpi.png',
+      name: 'drawable-mdpi/icon.png',
       size: 48
     },
     {
-      name: 'icon-72-ldpi.png',
+      name: 'drawable-hdpi/icon.png',
      size: 72
     },
     {
-      name: 'icon-96-ldpi.png',
+      name: 'drawable-xhdpi/icon.png',
+      size: 96
+    },
+    {
+      name: 'drawable/icon.png',
       size: 96
     }
   ];
@@ -367,6 +368,14 @@ exports.cordovaIcons = function(params) {
       };
     }
 
-    _.each(iosSizes, resizeFunc(iosPath));
+    if(platforms.indexOf('ios') > -1) {
+      if(!project) { throw 'No project specified'; }
+      var iosPath = 'platforms/ios/' + project + '/Resources/icons/';
+      _.each(iosSizes, resizeFunc(iosPath));
+    }
+
+    if(platforms.indexOf('android') > -1) {
+      _.each(androidSizes, resizeFunc(androidPath));
+    }
   };
 };

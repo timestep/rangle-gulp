@@ -56,10 +56,17 @@ gulp.task('icons', function() {
 
   var params = {
     project: 'Test App',
-    iconSrc: './test-data/icon.png'
+    iconSrc: './test-data/icon.png',
+    platforms: ['ios', 'android']
   };
 
   exec('mkdir -p \"platforms/ios/' + params.project + '/Resources/icons\"');
+  exec('mkdir -p \"platforms/android/res/drawable\"');
+  exec('mkdir -p \"platforms/android/res/drawable-ldpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-mdpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-hdpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-xhdpi\"');
+
   rg.cordovaIcons(params)();
 });
 
