@@ -56,11 +56,11 @@ gulp.task('icons', function() {
 
   var params = {
     project: 'Test App',
-    iconSrc: './test-data/icon-1024.png'
+    iconSrc: './test-data/icon.png'
   };
 
-  exec('mkdir -p platforms/ios/' + params.project + '/Resources/icons');
-  rg.cordovaIcons();
+  exec('mkdir -p \"platforms/ios/' + params.project + '/Resources/icons\"');
+  rg.cordovaIcons(params)();
 });
 
 gulp.task('default', ['lint']);

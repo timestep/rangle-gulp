@@ -23,8 +23,9 @@ var watch = require('gulp-watch');
 // var lr = require('tiny-lr');
 // var server = lr();
 //
-var imagemagick = require('imagemagick');
+var gm = require('gm');
 var _ = require('lodash');
+var exec = require('child_process').exec;
 
 var defaults = {};
 
@@ -244,6 +245,7 @@ exports.connectWatch = function (options) {
 // Defaults to ['android', 'ios'] when omitted.
 //
 exports.cordovaIcons = function(params) {
+  params = params || {};
   var iconSrc   = params.iconSrc || 'icon.png';
   var platforms = params.platforms || ['android', 'ios'];
   var project   = params.project;
@@ -251,6 +253,8 @@ exports.cordovaIcons = function(params) {
   if(!project) {
     throw 'No project specified';
   }
+
+  var iosPath = 'platforms/ios/' + project + '/Resources/icons/';
 
   var androidSizes = [
     {
@@ -347,8 +351,22 @@ exports.cordovaIcons = function(params) {
   ];
 
   return function() {
-    _.each(iosSizes, function(size) {
-      console.log(size);
-    });
+
+    function resizeFunc(path) {
+      return function(img) {
+        gm(iconSrc)
+          .resize(img.size, img.size)
+          .write(path + img.name, function(err) {
+            if(err) {
+              console.log('✗', '\'' + path + img.name + '\'');
+              console.log(err);
+            } else {
+              console.log('✓', '\'' + path + img.name + '\'');
+            }
+          });
+      };
+    }
+
+    _.each(iosSizes, resizeFunc(iosPath));
   };
 };
