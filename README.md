@@ -80,6 +80,21 @@ Sets up a sass task that watches for changes, compiles sass to css and then mini
 
 Starts a connect server which watches for changes to html & js files. It re-loads browser (make sure you install live-reload extension for your browser). The options can set `root` (folder path) `port`, `livereload` (boolean) and `glob` (arrary of source locations).
 
+## cordovaIcons(params)
+
+Depends on graphicsmagick. `brew install graphicsmagick`
+
+Generates resized and renamed icons for iOS and/or android, and places them in the proper platforms directory.
+
+Params is an object, and will set these default values:
+
+    {
+      "iconSrc"   : "icon.png",
+      "platforms" : ["android", "ios"],
+      "project"   : "undefined" // You ALWAYS have to specify this for iOS
+    }
+
+
 # Logging
 
 You can turn on control logging using setLogLevel(). E.g.:
