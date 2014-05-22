@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var rg = require('./src/rangle-gulp');
 
+var exec = require('child_process').exec;
+
 var allScripts = ['src/*.js', 'test-data/**/*.js'];
 
 gulp.task('karma', rg.karma({
@@ -27,6 +29,8 @@ gulp.task('dev', rg.nodemon({
 
 // Example dev task if you are building a Cordova app
 gulp.task('dev-cordova', function(options) {
+  'use strict';
+
 	// Watch sass files
 	// re-compile sass and minify css
 	rg.sass({
@@ -45,6 +49,25 @@ gulp.task('dev-cordova', function(options) {
   	// Files to watch for live re-load
 		glob : ['./test-data/*.html', './test-data/*.js']
 	});
+});
+
+gulp.task('icons', function() {
+  'use strict';
+
+  var params = {
+    project: 'Test App',
+    iconSrc: './test-data/icon.png',
+    platforms: ['ios', 'android']
+  };
+
+  exec('mkdir -p \"platforms/ios/' + params.project + '/Resources/icons\"');
+  exec('mkdir -p \"platforms/android/res/drawable\"');
+  exec('mkdir -p \"platforms/android/res/drawable-ldpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-mdpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-hdpi\"');
+  exec('mkdir -p \"platforms/android/res/drawable-xhdpi\"');
+
+  rg.cordovaIcons(params)();
 });
 
 gulp.task('default', ['lint']);
