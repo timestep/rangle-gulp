@@ -20,6 +20,8 @@ var connect = require('gulp-connect');
 var colors = require('colors');
 var minifyCSS = require('gulp-minify-css');
 var watch = require('gulp-watch');
+var webdriverUpdate = require('gulp-protractor').webdriver_update;
+var protractor = require('gulp-protractor').protractor;
 // var lr = require('tiny-lr');
 // var server = lr();
 //
@@ -59,6 +61,10 @@ defaults.clientTestScripts = [
 
 defaults.serverTestScripts = [
   'server/lib/**/*.test.js'
+];
+
+defaults.serverE2ETestScripts = [
+  'server/lib/**/*-scenarios.js'
 ];
 
 // Makes a task that runs or watches client-side tests using Karma.
@@ -107,6 +113,38 @@ exports.mocha = function (options) {
       .pipe(mocha({
         reporter: 'nyan'
       }))
+      .on('end', function () {
+        console.log('Donnnn');
+      });
+  };
+};
+
+exports.webdriverUpdate = function () {
+  return webdriverUpdate;
+}
+
+// Makes a task that runs or watches client-side tests using Karma.
+exports.protractor = function (options) {
+  options = options || {};
+  var files = options.vendor || [];
+  files = files.concat(options.files || defaults.serverE2ETestScripts);
+
+  logger.debug('Setting up a protractor task to run on the following files:');
+  files.forEach(function (file) {
+    logger.debug('  ', file);
+  });
+
+  return function (cb) {
+    // Be sure to return the stream
+    return gulp.src(files)
+      .pipe(protractor({
+        configFile: options.protractorConf || 'client/testing/protractor.conf.js',
+        args: ["--baseUrl", options.baseUrl]
+      }))
+      .on('error', function (err) {
+        // Make sure failed tests cause gulp to exit non-zero
+        throw err;
+      })
       .on('end', function () {
         console.log('Donnnn');
       });
