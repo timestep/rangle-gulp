@@ -44,6 +44,16 @@ angular.js, angular-mocks.js and sinon-chai.js.
 
 Set up a karma task to run when file content changes.
 
+## webDriverUpdate(options)
+
+Set up a Protractor web driver update task.
+
+## protractor(options)
+
+Set up a Protractor task. Use "options.protractorConf" if you want to specify a path to
+the Protractor config file.
+
+
 ## mocha(options)
 
 Set up a Mocha task. Use this for server-side unit testing.

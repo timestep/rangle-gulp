@@ -15,6 +15,16 @@ gulp.task('karma-watch', rg.karmaWatch({
   // karmaConf: specify which karma config file
 }));
 
+gulp.task('webdriver-update', rg.webDriverUpdate(
+  
+));
+
+gulp.task('protractor', rg.protractor(
+  // files: test files containing protractor scenarios
+  // baseUrl:
+  // protractorConf: optional location of the protractor config file
+));
+
 gulp.task('lint', rg.jshint({
   files: allScripts
 }));
