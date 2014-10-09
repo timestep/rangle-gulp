@@ -1,3 +1,5 @@
+@import 'example/module';
+
 .content {
 	width: 600px;
 	margin: 20px auto 0 auto;
@@ -7,8 +9,8 @@
 	a { text-decoration: none; color: #3498db; }
 	p { line-height: 1.5; }
 	p.lead { font-size: 24px; font-weight: lighter; }
-	em { 
-		color: #7f8c8d; 
+	em {
+		color: #7f8c8d;
 		font-style: normal;
 		background: #ecf0f1;
 		border-radius: 2px;

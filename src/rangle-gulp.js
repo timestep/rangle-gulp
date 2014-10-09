@@ -231,13 +231,12 @@ exports.setLogLevel = function (level) {
 // Watch and compile sass: requires a source and destination
 exports.sass = function(options) {
   options = options || {};
-  var source = options.source || 
+  var source = options.source ||
     ['./test-data/scss/**/*.scss', './test-data/scss/*.scss'];
   var destination = options.destination || './www/css';
-  
+
   console.log('[SASS] recompiling'.yellow);
   gulp.src(source)
-    .pipe(watch())
     .pipe(sass({
       errLogToConsole: true
     }))
@@ -246,7 +245,6 @@ exports.sass = function(options) {
     .pipe(connect.reload());
   console.log('[CSS] minifying'.yellow);
 };
-
 // Start a connect server and setup live reload
 exports.connectWatch = function (options) {
   options = options || {};
@@ -274,7 +272,7 @@ exports.connectWatch = function (options) {
 
 // Generate resized and renamed icons and places them in
 // appropriate platform directory.
-// 
+//
 // params can contain an 'iconSrc' property, which will default
 // to 'icon.png' when omitted.
 //
