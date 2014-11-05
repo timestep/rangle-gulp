@@ -15,13 +15,17 @@ var gulpFilter = require('gulp-filter');
 var nodemon = require('gulp-nodemon');
 var winston = require('winston');
 var fs = require('fs');
-var sass = require('gulp-sass');
+//var sass = require('gulp-sass');
 var connect = require('gulp-connect');
 var colors = require('colors');
 var minifyCSS = require('gulp-minify-css');
 var watch = require('gulp-watch');
+
 var webDriverUpdate = require('gulp-protractor').webdriver_update;
 var protractor = require('gulp-protractor').protractor;
+var exec = require('child_process').exec;
+
+
 // var lr = require('tiny-lr');
 // var server = lr();
 //
@@ -90,8 +94,11 @@ function makeKarmaTask(action, options) {
       });
   };
 }
-
-// Makes a task that runs Karma.
+var packages = {};
+exports.use = function (handle, dep) {
+    packages[handle] = dep;
+  }
+  // Makes a task that runs Karma.
 exports.karma = function (options) {
   options = options || {};
   return makeKarmaTask('run', options);
@@ -107,11 +114,18 @@ exports.karmaWatch = function (options) {
 exports.mocha = function (options) {
   options = options || {};
   var files = options.files || defaults.serverTestScripts;
+  options.reporter = options.reporter || 'nyan';
+  options.throwError = options.throwError || false;
+  options.errorHandler = options.errorHandler || function (err) {
+
+    throw err
+  };
+
   return function () {
     gulp.src(files)
       .pipe(mocha({
-        reporter: 'nyan'
-      }))
+        reporter: options.reporter
+      })).on('error', options.errorHandler)
       .on('end', function () {
         console.log('Donnnn');
       });
@@ -123,6 +137,7 @@ exports.webDriverUpdate = function () {
 }
 
 // Makes a task that runs or watches client-side tests using Karma.
+
 exports.protractor = function (options) {
   options = options || {};
   var files = options.vendor || [];
@@ -264,8 +279,8 @@ exports.connectWatch = function (options) {
   // Watch HTML and JS
   console.log('[CONNECT] Watching HTML and JS files for live-reload'.blue);
   watch({
-    glob: glob
-  })
+      glob: glob
+    })
     .pipe(connect.reload());
 };
 
