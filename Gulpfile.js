@@ -15,8 +15,8 @@ gulp.task('karma-watch', rg.karmaWatch({
   // karmaConf: specify which karma config file
 }));
 
-gulp.task('webdriver-update', rg.webDriverUpdate(
-  
+gulp.task('webdriver-update', rg.webdriverUpdate(
+
 ));
 
 gulp.task('protractor', rg.protractor(
@@ -37,20 +37,24 @@ gulp.task('dev', rg.nodemon({
   onChange: ['lint'] // or ['lint', 'karma']
 }));
 
-// Example dev task if you are building a Cordova app
-gulp.task('dev-cordova', function(options) {
-  'use strict';
+gulp.task('styles', function() {
+  rg.sass({
+    source: './test-data/scss/app.scss',
+    destination: './test-data/css/'
+  });
+});
 
-	// Watch sass files
-	// re-compile sass and minify css
-	rg.sass({
-		source : './test-data/scss/app.scss',
-		destination : './test-data/css'
-	});
+gulp.task('watch', ['styles'], function() {
+  gulp.watch('./test-data/**/*.scss', ['styles']);
+});
+
+// Example dev task if you are building a Cordova app
+gulp.task('dev-cordova', ['watch'], function(options) {
+  'use strict';
 
 	// Start a connect server
 	// Watch for changes to html & js files
-	// Re-load browser (make sure you install live-reload 
+	// Re-load browser (make sure you install live-reload
 	// extension for your browser)
 	rg.connectWatch({
 		root : 'test-data',
