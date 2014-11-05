@@ -20,7 +20,7 @@ var connect = require('gulp-connect');
 var colors = require('colors');
 var minifyCSS = require('gulp-minify-css');
 var watch = require('gulp-watch');
-var webdriverUpdate = require('gulp-protractor').webdriver_update;
+var webDriverUpdate = require('gulp-protractor').webdriver_update;
 var protractor = require('gulp-protractor').protractor;
 // var lr = require('tiny-lr');
 // var server = lr();
@@ -118,8 +118,8 @@ exports.mocha = function (options) {
   };
 };
 
-exports.webdriverUpdate = function () {
-  return webdriverUpdate;
+exports.webDriverUpdate = function () {
+  return webDriverUpdate;
 }
 
 // Makes a task that runs or watches client-side tests using Karma.
