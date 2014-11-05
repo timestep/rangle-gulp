@@ -27,7 +27,6 @@ var protractor = require('gulp-protractor').protractor;
 //
 var gm = require('gm');
 var _ = require('lodash');
-var exec = require('child_process').exec;
 
 var defaults = {};
 
@@ -284,9 +283,9 @@ exports.connectWatch = function (options) {
 //
 exports.cordovaIcons = function(params) {
   params = params || {};
-  var iconSrc   = params.iconSrc || 'icon.png';
-  var platforms = params.platforms || ['android', 'ios'];
-  var project   = params.project;
+  params.iconSrc   = params.iconSrc   || 'icon.png';
+  params.platforms = params.platforms || ['android', 'ios'];
+  params.project   = params.project   || undefined;
 
 
   var androidPath = 'platforms/android/res/';
@@ -393,7 +392,7 @@ exports.cordovaIcons = function(params) {
 
     function resizeFunc(path) {
       return function(img) {
-        gm(iconSrc)
+        gm(params.iconSrc)
           .resize(img.size, img.size)
           .write(path + img.name, function(err) {
             if(err) {
@@ -406,13 +405,13 @@ exports.cordovaIcons = function(params) {
       };
     }
 
-    if(platforms.indexOf('ios') > -1) {
-      if(!project) { throw 'No project specified'; }
-      var iosPath = 'platforms/ios/' + project + '/Resources/icons/';
+    if(params.platforms.indexOf('ios') > -1) {
+      if(!params.project) { throw 'No project specified'; }
+      var iosPath = 'platforms/ios/' + params.project + '/Resources/icons/';
       _.each(iosSizes, resizeFunc(iosPath));
     }
 
-    if(platforms.indexOf('android') > -1) {
+    if(params.platforms.indexOf('android') > -1) {
       _.each(androidSizes, resizeFunc(androidPath));
     }
   };
