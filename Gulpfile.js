@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var rg = require('./src/rangle-gulp');
+var watch = require('gulp-watch');
 
 var exec = require('child_process').exec;
 
@@ -15,7 +16,7 @@ gulp.task('karma-watch', rg.karmaWatch({
   // karmaConf: specify which karma config file
 }));
 
-gulp.task('webdriver-update', rg.webdriverUpdate(
+gulp.task('webdriver-update', rg.webDriverUpdate(
 
 ));
 
@@ -52,17 +53,31 @@ gulp.task('watch', ['styles'], function() {
 gulp.task('dev-cordova', ['watch'], function(options) {
   'use strict';
 
-	// Start a connect server
-	// Watch for changes to html & js files
-	// Re-load browser (make sure you install live-reload
-	// extension for your browser)
-	rg.connectWatch({
-		root : 'test-data',
-		port : 3000,
-		livereload : true,
-  	// Files to watch for live re-load
-		glob : ['./test-data/*.html', './test-data/*.js']
-	});
+  // Start a connect server
+  // Watch for changes to html & js files
+  // Re-load browser (make sure you install live-reload
+  // extension for your browser)
+  rg.connectWatch({
+    root : 'test-data',
+    port : 3000,
+    livereload : true,
+    // Files to watch for live re-load
+    glob : ['./test-data/*.html', './test-data/*.js']
+  });
+});
+
+//Example server with live reload
+gulp.task('server', function() {
+  var reload = rg.connectWatch({
+    root : 'test-data',
+    port : 3000,
+    livereload : true,
+    // Files to watch for live re-load
+    watch : ['./test-data/*.html', './test-data/*.js']
+  });
+
+  //We have the reload stream so we can set up our own logic to trigger reloads
+  watch({ glob: 'README.md' }).pipe(reload);
 });
 
 gulp.task('icons', function() {

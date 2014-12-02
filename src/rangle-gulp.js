@@ -266,7 +266,7 @@ exports.connectWatch = function (options) {
   var port = options.port || 3000;
   var livereload = options.livereload || true;
   // Files to watch for live re-load
-  var glob = options.glob || ['./www/**/*.html', './www/**/*.js'];
+  var glob = options.glob || options.watch || ['./www/**/*.html', './www/**/*.js'];
 
   connect.server({
     root: root,
@@ -282,6 +282,8 @@ exports.connectWatch = function (options) {
       glob: glob
     })
     .pipe(connect.reload());
+
+  return connect.reload();
 };
 
 // Generate resized and renamed icons and places them in
