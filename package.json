@@ -1,6 +1,6 @@
 {
   "name": "rangle-gulp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Gulp helper functions for Rangle.io default project structure",
   "main": "src/rangle-gulp.js",
   "dependencies": {
@@ -58,8 +58,5 @@
   "bugs": {
     "url": "https://github.com/rangle/rangle-gulp/issues"
   },
-  "homepage": "https://github.com/rangle/rangle-gulp",
-  "bin": {
-    "rangle-gulp": "./bin/rangle-gulp"
-  }
+  "homepage": "https://github.com/rangle/rangle-gulp"
 }
