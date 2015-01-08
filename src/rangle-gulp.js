@@ -169,9 +169,10 @@ exports.protractor = function (options) {
 exports.jshint = function (options) {
   options = options || {};
   return function () {
-    gulp.src(options.files || defaults.allScripts)
+    return gulp.src(options.files || defaults.allScripts)
       .pipe(jshint())
-      .pipe(jshint.reporter('default'));
+      .pipe(jshint.reporter('default'))
+      .pipe(jshint.reporter('fail'));
   };
 };
 
