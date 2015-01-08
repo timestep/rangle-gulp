@@ -96,9 +96,10 @@ function makeKarmaTask(action, options) {
 }
 var packages = {};
 exports.use = function (handle, dep) {
-    packages[handle] = dep;
-  }
-  // Makes a task that runs Karma.
+  packages[handle] = dep;
+};
+
+// Makes a task that runs Karma.
 exports.karma = function (options) {
   options = options || {};
   return makeKarmaTask('run', options);
@@ -118,7 +119,7 @@ exports.mocha = function (options) {
   options.throwError = options.throwError || false;
   options.errorHandler = options.errorHandler || function (err) {
 
-    throw err
+    throw err;
   };
 
   return function () {
@@ -134,7 +135,7 @@ exports.mocha = function (options) {
 
 exports.webDriverUpdate = function () {
   return webDriverUpdate;
-}
+};
 
 // Makes a task that runs or watches client-side tests using Karma.
 
@@ -153,7 +154,7 @@ exports.protractor = function (options) {
     return gulp.src(files)
       .pipe(protractor({
         configFile: options.protractorConf || 'client/testing/protractor.conf.js',
-        args: ["--baseUrl", options.baseUrl]
+        args: ['--baseUrl', options.baseUrl]
       }))
       .on('error', function (err) {
         // Make sure failed tests cause gulp to exit non-zero
