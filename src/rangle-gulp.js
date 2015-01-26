@@ -11,6 +11,7 @@ var mocha = require('gulp-mocha');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
+var gulpWatch = require('gulp-watch');
 var gulpFilter = require('gulp-filter');
 var nodemon = require('gulp-nodemon');
 var winston = require('winston');
@@ -66,6 +67,8 @@ defaults.serverTestScripts = [
   'server/lib/**/*.test.js'
 ];
 
+defaults.allServerWatchScripts = defaults.serverTestScripts.concat(defaults.serverScripts);
+
 defaults.serverE2ETestScripts = [
   'server/lib/**/*-scenarios.js'
 ];
@@ -111,6 +114,7 @@ exports.karmaWatch = function (options) {
   return makeKarmaTask('watch', options);
 };
 
+
 // Makes a task that runs Mocha. (Use this for server-side tests.)
 exports.mocha = function (options) {
   options = options || {};
@@ -121,7 +125,6 @@ exports.mocha = function (options) {
 
     throw err;
   };
-
   return function () {
     gulp.src(files)
       .pipe(mocha({
@@ -130,6 +133,17 @@ exports.mocha = function (options) {
       .on('end', function () {
         console.log('Donnnn');
       });
+  };
+};
+
+//watch the server files and rerun the mocha tests.
+exports.mochaWatch = function (options) {
+  options = options || {};
+  var watchFiles = options.watch || defaults.allServerWatchScripts;
+  options.reporter = options.reporter || 'min';
+  var mochaSingleRun = exports.mocha(options);
+  return function(){
+     gulpWatch({glob : watchFiles},mochaSingleRun);
   };
 };
 

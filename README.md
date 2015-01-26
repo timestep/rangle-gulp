@@ -58,6 +58,10 @@ the Protractor config file.
 
 Set up a Mocha task. Use this for server-side unit testing.
 
+## mochaWatch(options)
+
+Rerun the "mocha" task every time a change is detected in the "options.watch" glob(s);
+
 ## jshint(options)
 
 Set up a JSHint task
@@ -74,7 +78,7 @@ names for tasks that should run on file change. (The default is just lint.)
 
 ## sass(options)
 
-Sets up a sass task that watches for changes, compiles sass to css and then minifies the css. The task requires source (array of source locations) and destination location to be passed in as options. 
+Sets up a sass task that watches for changes, compiles sass to css and then minifies the css. The task requires source (array of source locations) and destination location to be passed in as options.
 
 ## connectWatch(options)
 
