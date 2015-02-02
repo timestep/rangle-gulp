@@ -125,7 +125,9 @@ exports.mocha = function (options) {
   return function () {
     gulp.src(files)
       .pipe(mocha({
-        reporter: options.reporter
+        reporter: options.reporter,
+        timeout: options.timeout || 2000,
+        bail: options.bail || false
       })).on('error', options.errorHandler)
       .on('end', function () {
         console.log('Donnnn');
