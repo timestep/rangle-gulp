@@ -243,7 +243,7 @@ exports.nodemon = function (options) {
   }
   return function () {
     nodemon(nodemonOptions)
-      .on('change', options.onChange || ['lint'])
+      .on('change', options.onChange || [])
       .on('restart', function () {
         logger.info('--- Restarted the server ---');
       });
