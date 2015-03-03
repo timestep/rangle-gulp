@@ -21,6 +21,13 @@ var connect = require('gulp-connect');
 var colors = require('colors');
 var minifyCSS = require('gulp-minify-css');
 var watch = require('gulp-watch');
+var istanbul = require('gulp-istanbul');
+var gutil = require('gulp-util')
+
+  require('istanbul/lib/register-plugins'); //need to load the check istanbul coverage plugin
+  var commandFactory = require('istanbul/lib/command');
+
+
 
 var webDriverUpdate = require('gulp-protractor').webdriver_update;
 var protractor = require('gulp-protractor').protractor;
@@ -74,8 +81,11 @@ defaults.serverE2ETestScripts = [
 ];
 
 // Makes a task that runs or watches client-side tests using Karma.
-function makeKarmaTask(action, options) {
-  options = options || {};
+function makeKarmaTask(action, options) {  
+  if(options.karmaConf !== ''){
+    options.configFile = options.karmaConf || 'client/testing/karma.conf.js';
+  }
+  options.action = action;
   var files = options.vendor || [];
   files = files.concat(options.files || defaults.clientTestScripts);
 
@@ -87,10 +97,7 @@ function makeKarmaTask(action, options) {
   return function () {
     // Be sure to return the stream
     return gulp.src(files)
-      .pipe(karma({
-        configFile: options.karmaConf || 'client/testing/karma.conf.js',
-        action: action
-      }))
+      .pipe(karma(options))
       .on('error', function (err) {
         // Make sure failed tests cause gulp to exit non-zero
         throw err;
@@ -114,27 +121,32 @@ exports.karmaWatch = function (options) {
   return makeKarmaTask('watch', options);
 };
 
-
 // Makes a task that runs Mocha. (Use this for server-side tests.)
 exports.mocha = function (options) {
   options = options || {};
   var files = options.files || defaults.serverTestScripts;
-  options.reporter = options.reporter || 'nyan';
+  options.reporter = options.reporter || 'spec';
   options.throwError = options.throwError || false;
   options.errorHandler = options.errorHandler || function (err) {
-
     throw err;
   };
+  options.coverageReportConfig = options.coverageReportConfig || {
+    dir: 'coverage/server',
+    reporters : [
+    'json', //for ensuring minimum test coverage
+    'text-summary', //for command line display
+    'html' //for display on circle ci
+    ]
+  };
   return function () {
-    gulp.src(files)
+    return gulp.src(files,{read:false})
       .pipe(mocha({
         reporter: options.reporter,
         timeout: options.timeout || 2000,
         bail: options.bail || false
-      })).on('error', options.errorHandler)
-      .on('end', function () {
-        console.log('Donnnn');
-      });
+      }))
+      .pipe(options.skipCoverage ? gutil.noop() : istanbul.writeReports(options.coverageReportConfig))
+      .on('error', options.errorHandler);
   };
 };
 
@@ -143,10 +155,59 @@ exports.mochaWatch = function (options) {
   options = options || {};
   var watchFiles = options.watch || defaults.allServerWatchScripts;
   options.reporter = options.reporter || 'min';
+  options.coverageReportConfig = { reporter : 'text-summary' };
   var mochaSingleRun = exports.mocha(options);
   return function(){
-     gulpWatch({glob : watchFiles},mochaSingleRun);
+     gulpWatch({glob : watchFiles}, mochaSingleRun);
   };
+};
+
+//ensure that a minimum test coverage was generated
+exports.ensureTestCoverage = function(options) {
+  options = options || {};
+  options.thresholds = options.thresholds || {};
+
+  if(!options.coverageDirectory){
+    throw new Error('options.coverageDirectory required!')
+  }
+  var checkCoverageCommand = commandFactory.create('check-coverage');
+
+  var args=  [
+    '--statements=' + (options.thresholds.statements ? options.thresholds.statements : 100),
+    '--branches=' + (options.thresholds.branches ? options.thresholds.branches : 100),
+    '--lines=' + (options.thresholds.lines ? options.thresholds.branches : 100),
+    '--functions=' + (options.thresholds.functions ? options.thresholds.functions : 100),
+    '--root=' + (options.rootDirectory ? options.rootDirectory : '.'),
+
+    options.coverageDirectory +'/coverage*.json',
+  ];
+
+  return function(cb){
+    //nice to have: check that the provided coverage file exists
+    return checkCoverageCommand.run(args,function(err){
+      if(err){
+         cb(new gutil.PluginError('ensureTestCoverage', err, {showStack: false}));
+       }else{
+        cb();
+       }
+
+    });
+  };
+};
+
+exports.prepareMochaTestCoverage = function(options) {
+  options = options || {};
+  if(!options.filesToCover){
+    options.filesToCover = defaults.serverScripts;
+    defaults.serverTestScripts.forEach(function(pattern){
+      options.filesToCover.push('!'+pattern);
+    });
+  }
+  return function(){
+    return  gulp.src(options.filesToCover,{read:true})
+    .pipe(istanbul()) // Covering files
+    .pipe(istanbul.hookRequire()) // Force `require` to return covered files
+  }
 };
 
 exports.webDriverUpdate = function () {
