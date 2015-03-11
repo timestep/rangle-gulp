@@ -267,7 +267,8 @@ exports.beautify = function (options) {
   };
 };
 
-// Makes a task that runs JSBeautify on all script and test files.
+// Makes a task that concatenates all the non 'test' js files, and publishes both:
+// a version which is concatenated and uglified, and a version which is just concatenated.
 exports.concatAndUglify = function (options) {
   options = options || {};
   var name = options.name || 'all';
