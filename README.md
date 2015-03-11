@@ -62,6 +62,14 @@ Set up a Mocha task. Use this for server-side unit testing.
 
 Rerun the "mocha" task every time a change is detected in the "options.watch" glob(s);
 
+## prepareMochaTestCoverage(options)
+
+Task to be run before the mocha tests are run to prepare Istanbul's code coverage metrics.
+
+## ensureTestCoverage(options)
+
+Reads in an Instabul JSON test coverage report, and will throw an error if any coverage critia is not met (all default to 100%).
+
 ## jshint(options)
 
 Set up a JSHint task
